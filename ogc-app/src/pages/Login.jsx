@@ -1,11 +1,37 @@
-import React from 'react';
+import axios from 'axios';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
+    const [username, setUsername] = useState('dontwike');
+    const [password, setPassword] = useState('123');
+    const navigate = useNavigate();
+
+    async function handleSubmit(e) {
+        try {
+            console.log(username, password);
+            e.preventDefault();
+
+            const res = await axios.post('http://localhost:8080/login', {
+                username: username,
+                password: password
+            });
+
+            console.log(res.data.token);
+            const token = res.data.token;
+            localStorage.setItem('token', token);
+            navigate('/ppdt');
+        } catch (error) {
+            console.log(error);
+
+        }
+    }
+
     return (
         <div className="flex flex-col w-full md:w-1/2 xl:w-2/5 2xl:w-2/5 3xl:w-1/3 mx-auto p-8 md:p-10 2xl:p-12 3xl:p-14 rounded-2xl">
             <form className="flex flex-col">
                 <div className="pb-2">
-                    <label htmlFor="email" className="block mb-2 text-base font-medium text-[#e6e9ed]">Email</label>
+                    <label htmlFor="email" className="block mb-2 text-base font-medium text-[#e6e9ed]">Email / Username</label>
                     <div className="relative text-gray-400">
                         <span className="absolute inset-y-0 left-0 flex items-center p-1 pl-3">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-mail">
@@ -13,13 +39,13 @@ const Login = () => {
                                 <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
                             </svg>
                         </span>
-                        <input 
-                            type="email" 
-                            name="email" 
-                            id="email" 
-                            className="pl-12 mb-2 bg-[#1D232A] text-gray-200 border focus:border-transparent border-gray-300 sm:text-sm rounded-lg ring ring-transparent focus:ring-1 focus:outline-none focus:ring-gray-400 block w-full p-2.5 rounded-l-lg py-3 px-4" 
-                            placeholder="name@company.com" 
-                            autoComplete="off" 
+                        <input
+                            name="email"
+                            id="email"
+                            className="pl-12 mb-2 bg-[#1D232A] text-gray-200 border focus:border-transparent border-gray-300 sm:text-sm rounded-lg ring ring-transparent focus:ring-1 focus:outline-none focus:ring-gray-400 block w-full p-2.5 rounded-l-lg py-3 px-4"
+                            placeholder="name@company.com"
+                            autoComplete="off"
+                            onChange={(e) => { setUsername(e.target.value) }}
                         />
                     </div>
                 </div>
@@ -35,18 +61,19 @@ const Login = () => {
                                 <path d="m8.5 10 7 4"></path>
                             </svg>
                         </span>
-                        <input 
-                            type="password" 
-                            name="password" 
-                            id="password" 
-                            placeholder="••••••••••" 
-                            className="pl-12 mb-2 bg-[#1D232A] text-gray-200 border focus:border-transparent border-gray-300 sm:text-sm rounded-lg ring ring-transparent focus:ring-1 focus:outline-none focus:ring-gray-400 block w-full p-2.5 rounded-l-lg py-3 px-4" 
-                            autoComplete="new-password" 
+                        <input
+                            type="password"
+                            name="password"
+                            id="password"
+                            placeholder="••••••••••"
+                            className="pl-12 mb-2 bg-[#1D232A] text-gray-200 border focus:border-transparent border-gray-300 sm:text-sm rounded-lg ring ring-transparent focus:ring-1 focus:outline-none focus:ring-gray-400 block w-full p-2.5 rounded-l-lg py-3 px-4"
+                            autoComplete="new-password"
+                            onChange={(e) => { setPassword(e.target.value) }}
                         />
                     </div>
                 </div>
 
-                <button type="submit" className="w-full text-[#FFFFFF] bg-[#4F46E5] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-6">
+                <button type="submit" className="w-full text-[#FFFFFF] bg-[#4F46E5] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-6" onClick={handleSubmit}>
                     Login
                 </button>
                 <div className="text-sm font-light text-[#79849b] text-center">

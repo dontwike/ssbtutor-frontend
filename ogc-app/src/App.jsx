@@ -19,7 +19,6 @@ function App() {
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Signin />} />
           <Route path='/upload' element={<Cloudinary />} />
-
         </Routes>
       </BrowserRouter>
     </>

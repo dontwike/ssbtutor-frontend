@@ -1,6 +1,6 @@
 import React from 'react'
 import Carousel from '../components/Carousel'
-import ButtonFooter from '../components/buttonFooter'
+// import ButtonFooter from '../components/buttonFooter'
 
 const PPDT = () => {
 
@@ -10,9 +10,9 @@ const PPDT = () => {
                 <Carousel />
             </div>
 
-            <div className='flex justify-center mt-5'>
+            {/* <div className='flex justify-center mt-5'>
                 <ButtonFooter />
-            </div>
+            </div> */}
         </>
     )
 }

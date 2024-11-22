@@ -9,7 +9,6 @@ const Login = () => {
 
     async function handleSubmit(e) {
         try {
-            console.log(username, password);
             e.preventDefault();
 
             const res = await axios.post('http://localhost:8080/login', {
@@ -17,10 +16,10 @@ const Login = () => {
                 password: password
             });
 
-            console.log(res.data.token);
             const token = res.data.token;
             localStorage.setItem('token', token);
-            navigate('/ppdt');
+            await navigate('/');
+            window.location.reload();
         } catch (error) {
             console.log(error);
 

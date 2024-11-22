@@ -3,10 +3,10 @@ import React from 'react'
 const ButtonFooter = () => {
 
   return (
-    <div className=''>
-      <button className="btn btn-wide mt-2">Previous</button>
+    <div className='flex-col flex-wrap flex items-center md:flex-row md:justify-around md:w-[70%] '>
+      <button className="btn btn-wide">Previous</button>
       <br />
-      <button className="btn btn-wide mt-2" onClick={handleNext}>Next</button>
+      <button className="btn btn-wide">Next</button>
     </div>
   )
 }

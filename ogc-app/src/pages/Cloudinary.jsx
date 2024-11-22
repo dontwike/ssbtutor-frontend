@@ -18,7 +18,7 @@ const Cloudinary = () => {
 
         const formData = new FormData();
         Array.from(files).forEach(file => {
-            formData.append("images", file); 
+            formData.append("images", file);
         });
 
         try {
@@ -43,14 +43,7 @@ const Cloudinary = () => {
                             <form onSubmit={handleSubmit} encType="multipart/form-data">
                                 <div className="mb-3">
                                     <label className="form-label" htmlFor="formFile">Choose files</label>
-                                    <input
-                                        className="form-control"
-                                        type="file"
-                                        id="formFile"
-                                        name="images"
-                                        multiple
-                                        onChange={handleFileChange}
-                                    />
+                                    <input type="file" className="file-input file-input-bordered w-full max-w-xs" onChange={handleFileChange} id="formFile" name="images" multiple />
                                 </div>
                                 <div className="d-flex justify-content-center">
                                     <button type="submit" className="btn btn-success">Upload</button>

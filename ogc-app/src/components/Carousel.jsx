@@ -1,14 +1,17 @@
 import axios from 'axios';
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import { ButtonDisabledPic, ButtonDisabledWrite, Data, PicSeconds, ShowPic, WriteSeconds } from '../atoms/CarouselAtom';
 
 const Carousel = () => {
-    const [picSeconds, setPicSeconds] = useState(0);
-    const [writeSeconds, setWriteSeconds] = useState(0);
-    const [showPic, setShowPic] = useState(false);
-    const [buttonDisabledPic, setButtonDisabledPic] = useState(false);
-    const [buttonDisabledWrite, setButtonDisabledWrite] = useState(true);
-    const [data, setData] = useState();
+    
+    const [picSeconds, setPicSeconds] = useRecoilState(PicSeconds);
+    const [writeSeconds, setWriteSeconds] = useRecoilState(WriteSeconds);
+    const [showPic, setShowPic] = useRecoilState(ShowPic);
+    const [buttonDisabledPic, setButtonDisabledPic] = useRecoilState(ButtonDisabledPic);
+    const [buttonDisabledWrite, setButtonDisabledWrite] = useRecoilState(ButtonDisabledWrite);
+    const [data, setData] = useRecoilState(Data);
 
     const picIntervalRef = useRef(null);
     const writeIntervalRef = useRef(null);
@@ -84,7 +87,7 @@ const Carousel = () => {
     };
 
     return (
-        <div className="card glass w-[90%] md:w-[80%] lg:w-[60%]">
+        <div className="card glass w-[90%] md:w-[80%] lg:w-[60%] mb-5">
             <figure>
                 {showPic ? (
                     <img

@@ -7,6 +7,7 @@ const AuthRouter = require("./routes/Auth");
 const CloudinaryRouter = require("./routes/Cloudinary");
 const PPDTRouter = require("./routes/ppdtRoutes");
 const cors = require("cors");
+const profileRoutes = require("./routes/profileRoutes");
 
 app.use(bodyParser.json());
 app.use(
@@ -18,6 +19,7 @@ app.use(
 app.use("/", AuthRouter);
 app.use("/", CloudinaryRouter.router);
 app.use("/", PPDTRouter.router)
+app.use("/", profileRoutes.router);
 
 app.listen(process.env.PORT, () => {
   console.log("listening to port " + process.env.PORT);

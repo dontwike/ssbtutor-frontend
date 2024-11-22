@@ -10,11 +10,10 @@ const PPDTMain = () => {
             try {
                 const response = await axios.get('http://localhost:8080/ppdt', {
                     headers: {
-                        Authorization : localStorage.getItem('token')
+                        Authorization: localStorage.getItem('token')
                     }
                 });
-                console.log(response.data.post);
-                setPosts(response.data.post);
+                setPosts(response.data.PPDT_posts);
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
@@ -24,9 +23,9 @@ const PPDTMain = () => {
     }, []);
 
     return (
-        <div className="flex mt-7 flex-wrap gap-4 items-center justify-center">
+        <div className="flex mt-7 flex-wrap gap-6 items-center justify-center">
             {posts.map((item, index) => (
-                <Tab key={index} link={item._id} name={item.name} /> 
+                <Tab key={index} link={item.id} name={item.name} />
             ))}
         </div>
     );

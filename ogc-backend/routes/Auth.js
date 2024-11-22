@@ -1,50 +1,136 @@
 const express = require("express");
 const router = express.Router();
-const User = require("../model/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const prisma = require("../model/prisma");
+const User = require("../model/mongodb/user");
 
-//Registration
+// User-Registration
 router.post("/signup", async (req, res) => {
   try {
     const { username, password, name, phno } = req.body;
-    const hashPass = await bcrypt.hash(password, 10);
-    const user = new User({
+
+    //MongoDB
+    const ifUsernamePresent = await User.findOne({
       username: username,
-      password: hashPass,
-      name: name,
+    });
+    const ifPhoneNumberPresent = await User.findOne({
       phno: phno,
     });
 
-    const createUser = await user.save();
+    // Prisma
+    // const ifUsernamePresent = await prisma.user.findFirst({
+    //   where: { username },
+    // });
+    // const ifPhoneNumberPresent = await prisma.user.findFirst({
+    //   where: { phno },
+    // });
+
+    if (ifUsernamePresent || ifPhoneNumberPresent) {
+      console.log("username or phone number already exists");
+
+      return res.status(400).json({
+        success: false,
+        message: "Username or phone number already exists. Please log in!",
+      });
+    }
+
+    const hashPass = await bcrypt.hash(password, 10);
+
+    //MongoDB
+    const createUser = await User.create({
+      username,
+      password: hashPass,
+      name,
+      phno,
+      credits: 100,
+      role: "user",
+    });
+
+    // Prisma
+    // const createUser = await prisma.user.create({
+    //   data: {
+    //     username,
+    //     password: hashPass,
+    //     name,
+    //     phno,
+    //     credits: 100,
+    //     role: "user",
+    //   },
+    // });
     console.log(createUser);
 
-    res.status(201).json({ message: "User saved successfully" });
+    res.status(201).json({
+      success: true,
+      message: "User registered successfully",
+      userId: createUser.id,
+    });
   } catch (err) {
-    res.status(500).json({ message: "Registration failed" });
+    console.error(err);
+
+    res.status(500).json({
+      message: "Registration failed",
+    });
   }
 });
 
-//User login
+// User-Login
 router.post("/login", async (req, res) => {
   try {
     const { username, password } = req.body;
-    const user = await User.findOne({ username: username });
-    
-    if (!user) {
-      return res.status(401).json({ message: "Authentication failed" });
-    }
-    const passwordMatch = await bcrypt.compare(password, user.password);
-    if (!passwordMatch) {
-      return res.status(401).json({ message: "Authentication failed" });
-    }
-    const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY, {
-      expiresIn: "30d",
+    console.log(username);
+
+    //MongoDB
+    const ifUserPresent = await User.findOne({
+      username: username,
     });
 
-    res.status(200).json({ token });
+    // Prisma
+    // const ifUserPresent = await prisma.user.findFirst({
+    //   where: { username: username },
+    // });
+    console.log(ifUserPresent);
+
+    if (!ifUserPresent) {
+      console.log("Username does not exist");
+      return res.status(400).json({
+        success: false,
+        message: "Username does not exist. Please sign up!",
+      });
+    }
+
+    // Check password
+    const passwordMatch = await bcrypt.compare(
+      password,
+      ifUserPresent.password
+    );
+    if (!passwordMatch) {
+      return res.status(401).json({
+        success: false,
+        message: "Password didn't match. Authentication failed!",
+      });
+    }
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { userId: ifUserPresent.id },
+      process.env.SECRET_KEY,
+      {
+        expiresIn: "30d",
+      }
+    );
+
+    res.status(200).json({
+      success: true,
+      token,
+      message: "Login successful!",
+    });
   } catch (error) {
-    res.status(500).json({ error: "Login failed" });
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Login failed. An error occurred.",
+    });
   }
 });
 

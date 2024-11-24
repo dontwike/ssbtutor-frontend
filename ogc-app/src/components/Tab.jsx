@@ -15,9 +15,9 @@ const Tab = (props) => {
         <p className="text-l font-bold">{props.name}</p>
       </a>
       
-      <button className="w-full mt-1 text-black font-semibold py-1 rounded-lg border-2 bg-white shadow-lg  active:scale-95 transition-transform opacity-60 hover:opacity-90" onClick={handleOnSubmit}>
+      {/* <button className="w-full mt-1 text-black font-semibold py-1 rounded-lg border-2 bg-white shadow-lg  active:scale-95 transition-transform opacity-60 hover:opacity-90" onClick={handleOnSubmit}>
       10 Cr 
-      </button> 
+      </button>  */}
     </div>
   );
 };

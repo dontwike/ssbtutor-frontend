@@ -1,7 +1,7 @@
 import React from 'react'
 import Carousel from '../components/Carousel'
 import ButtonFooter from '../components/ButtonFooter'
-import TextArea from '../components/TextArea'
+import CommentSection from '../components/CommentSection'
 // import ButtonFooter from '../components/buttonFooter'
 
 const PPDT = () => {
@@ -16,7 +16,7 @@ const PPDT = () => {
                 <ButtonFooter />
             </div> */}
 
-            <TextArea />
+            <CommentSection />
         </>
     )
 }

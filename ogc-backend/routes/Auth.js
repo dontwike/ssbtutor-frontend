@@ -77,6 +77,7 @@ router.post("/signup", async (req, res) => {
 // User-Login
 router.post("/login", async (req, res) => {
   try {
+    console.log("login");
     const { username, password } = req.body;
     console.log(username);
 
@@ -113,7 +114,7 @@ router.post("/login", async (req, res) => {
 
     // Generate JWT token
     const token = jwt.sign(
-      { userId: ifUserPresent.id },
+      { userId: ifUserPresent._id },
       process.env.SECRET_KEY,
       {
         expiresIn: "30d",

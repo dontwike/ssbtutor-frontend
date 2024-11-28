@@ -8,14 +8,14 @@ const User = require("../model/mongodb/user");
 
 router.get("/getCredits", Authorization, async (req, res) => {
   try {
+    console.log("credits");
     const token = req.header("Authorization");
-    const decoded = jwt.verify(token, process.env.SECRET_KEY);
-    const userId = decode.userId;
+    const userId = jwt.decode(token).userId;
 
     //MongoDB
     const user = await User.findOne({
-        id: userId,
-      });
+      _id: userId,
+    });
 
     // Prisma
     // const user = await prisma.user.findFirst({
@@ -30,7 +30,7 @@ router.get("/getCredits", Authorization, async (req, res) => {
 
     res.status(200).json({
       message: "User found!",
-      credits: user.credits
+      credits: user.credits,
     });
   } catch (e) {
     res.status(400).json({ message: "Something went wrong!!!" });

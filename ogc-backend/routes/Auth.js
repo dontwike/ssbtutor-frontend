@@ -2,42 +2,35 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const prisma = require("../model/prisma");
 const User = require("../model/mongodb/user");
+const PurchasedItem = require("../model/mongodb/PurchasedItem");
 
 // User-Registration
 router.post("/signup", async (req, res) => {
   try {
     const { username, password, name, phno } = req.body;
 
-    //MongoDB
-    const ifUsernamePresent = await User.findOne({
-      username: username,
-    });
-    const ifPhoneNumberPresent = await User.findOne({
-      phno: phno,
-    });
+    // MongoDB checks for existing username or phone number
+    const ifUsernamePresent = await User.findOne({ username });
+    const ifPhoneNumberPresent = await User.findOne({ phno });
 
-    // Prisma
-    // const ifUsernamePresent = await prisma.user.findFirst({
-    //   where: { username },
-    // });
-    // const ifPhoneNumberPresent = await prisma.user.findFirst({
-    //   where: { phno },
-    // });
-
-    if (ifUsernamePresent || ifPhoneNumberPresent) {
-      console.log("username or phone number already exists");
-
+    if (ifUsernamePresent) {
       return res.status(400).json({
         success: false,
-        message: "Username or phone number already exists. Please log in!",
+        message: "Username already exists. Please choose another one.",
+      });
+    }
+
+    if (ifPhoneNumberPresent) {
+      return res.status(400).json({
+        success: false,
+        message: "Phone number already exists. Please choose another one.",
       });
     }
 
     const hashPass = await bcrypt.hash(password, 10);
 
-    //MongoDB
+    // MongoDB: Creating new user
     const createUser = await User.create({
       username,
       password: hashPass,
@@ -47,18 +40,36 @@ router.post("/signup", async (req, res) => {
       role: "user",
     });
 
-    // Prisma
-    // const createUser = await prisma.user.create({
-    //   data: {
-    //     username,
-    //     password: hashPass,
-    //     name,
-    //     phno,
-    //     credits: 100,
-    //     role: "user",
-    //   },
-    // });
-    console.log(createUser);
+    const items = ["PPDT", "WAT", "TAT", "SRT"];
+    const itemsArray = [];
+
+    // Loop through the items array to create items
+    items.forEach((itemType) => {
+      let maxLimit;
+      if (itemType === "PPDT") maxLimit = 10;
+      if (itemType === "WAT") maxLimit = 2;
+      if (itemType === "TAT") maxLimit = 5;
+      if (itemType === "SRT") maxLimit = 2;
+
+      for (let i = 1; i <= maxLimit; i++) {
+        itemsArray.push(`${itemType} ${i}`);
+      }
+    });
+
+    // Creating purchased items
+    try {
+      const createFreeItems = await PurchasedItem.create({
+        userId: createUser._id,
+        itemId: itemsArray,
+      });
+      console.log("Items created successfully:", createFreeItems);
+    } catch (err) {
+      console.error("Error creating items:", err);
+      return res.status(500).json({
+        success: false,
+        message: "Failed to create purchased items",
+      });
+    }
 
     res.status(201).json({
       success: true,
@@ -67,7 +78,6 @@ router.post("/signup", async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-
     res.status(500).json({
       success: false,
       message: "Registration failed",

@@ -1,4 +1,3 @@
-import { Textarea } from "@material-tailwind/react";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
@@ -22,8 +21,8 @@ const CommentSection = () => {
         } else {
           console.error("Expected an array, got:", data);
         }
-      } catch (error) {
-        console.error("Error fetching comments:", error);
+      } catch (err) {
+        console.error("Error fetching comments:", err); 
       }
     };
     fetchComments();

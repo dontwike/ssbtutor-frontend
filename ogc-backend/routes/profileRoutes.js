@@ -33,9 +33,9 @@ router.get("/getCredits", Authorization, async (req, res) => {
       credits: user.credits,
     });
   } catch (e) {
-    res.status(400).json({ 
+    res.status(400).json({
       success: true,
-      message: "Something went wrong!!!" 
+      message: "Something went wrong!!!",
     });
   }
 });

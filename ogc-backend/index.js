@@ -10,10 +10,11 @@ const cors = require("cors");
 const profileRoutes = require("./routes/profileRoutes");
 const commentRoutes = require("./routes/commentRoutes");
 
+app.use(express.json());
 app.use(bodyParser.json());
 app.use(
   cors({
-    origin: "http://localhost:5173", // Adjust to your frontend's origin
+    origin: "http://localhost:5173",
   })
 );
 

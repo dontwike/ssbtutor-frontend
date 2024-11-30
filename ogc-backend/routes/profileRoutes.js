@@ -8,7 +8,6 @@ const User = require("../model/mongodb/user");
 
 router.get("/getCredits", Authorization, async (req, res) => {
   try {
-    console.log("credits");
     const token = req.header("Authorization");
     const userId = jwt.decode(token).userId;
 
@@ -29,11 +28,15 @@ router.get("/getCredits", Authorization, async (req, res) => {
     }
 
     res.status(200).json({
+      success: true,
       message: "User found!",
       credits: user.credits,
     });
   } catch (e) {
-    res.status(400).json({ message: "Something went wrong!!!" });
+    res.status(400).json({ 
+      success: true,
+      message: "Something went wrong!!!" 
+    });
   }
 });
 

@@ -69,6 +69,7 @@ router.post("/signup", async (req, res) => {
     console.error(err);
 
     res.status(500).json({
+      success: false,
       message: "Registration failed",
     });
   }
@@ -77,9 +78,7 @@ router.post("/signup", async (req, res) => {
 // User-Login
 router.post("/login", async (req, res) => {
   try {
-    console.log("login");
     const { username, password } = req.body;
-    console.log(username);
 
     //MongoDB
     const ifUserPresent = await User.findOne({
@@ -90,7 +89,6 @@ router.post("/login", async (req, res) => {
     // const ifUserPresent = await prisma.user.findFirst({
     //   where: { username: username },
     // });
-    console.log(ifUserPresent);
 
     if (!ifUserPresent) {
       console.log("Username does not exist");
@@ -116,9 +114,7 @@ router.post("/login", async (req, res) => {
     const token = jwt.sign(
       { userId: ifUserPresent._id },
       process.env.SECRET_KEY,
-      {
-        expiresIn: "30d",
-      }
+      { expiresIn: "30d" }
     );
 
     res.status(200).json({
@@ -135,4 +131,4 @@ router.post("/login", async (req, res) => {
   }
 });
 
-module.exports = router;
+module.exports = { router };

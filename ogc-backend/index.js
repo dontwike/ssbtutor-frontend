@@ -17,7 +17,7 @@ app.use(
   })
 );
 
-app.use("/", AuthRouter);
+app.use("/", AuthRouter.router);
 app.use("/", CloudinaryRouter.router);
 app.use("/", PPDTRouter.router);
 app.use("/", profileRoutes.router);

@@ -1,12 +1,33 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { PPDTPrice } from "../atoms/PurchaseAtoms";
+import { CreditAtom } from "../atoms/CreditsAtom";
+import axios from "axios";
 
 const TabUnPurchased = (props) => {
   const navigate = useNavigate();
+  const ppdtprice = useRecoilValue(PPDTPrice);
+  const [credits, setCredits] = useRecoilState(CreditAtom);
+  const ppdtname = props.name;
 
-  function handleOnSubmit(event) {
+  async function handleOnSubmit(event) {
     event.stopPropagation();
-    navigate('/subscribe')
+
+    if (credits > ppdtprice) {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const res = await axios.post("http://localhost:8080/buyppdt",{ ppdtprice, ppdtname }, {
+            headers: {
+              Authorization: `${token}`,
+            }});
+
+        setCredits(res.data.credits);
+        window.location.reload();
+      }
+    } else {
+      navigate("/subscribe");
+    }
   }
 
   return (

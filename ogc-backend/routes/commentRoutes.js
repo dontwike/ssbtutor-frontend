@@ -7,8 +7,6 @@ const User = require("../model/mongodb/user");
 
 router.post("/comments", async (req, res) => {
   try {
-    console.log("comment");
-
     const { postId, parentComment, content } = req.body;
     const token = req.header("Authorization");
     const userId = jwt.decode(token).userId;

@@ -3,19 +3,18 @@ const router = express.Router();
 const Authorization = require("../middleware/Authorization");
 const prisma = require("../model/prisma");
 const { decode } = require("jsonwebtoken");
-const jwt = require("jsonwebtoken");
 const User = require("../model/mongodb/user");
 
 router.get("/getCredits", Authorization, async (req, res) => {
   try {
     const token = req.header("Authorization");
-    const userId = jwt.decode(token).userId;
+    const userId = decode(token).userId;
 
     //MongoDB
     const user = await User.findOne({
       _id: userId,
     });
-
+    
     // Prisma
     // const user = await prisma.user.findFirst({
     //   id: userId,
@@ -34,7 +33,7 @@ router.get("/getCredits", Authorization, async (req, res) => {
     });
   } catch (e) {
     res.status(400).json({
-      success: true,
+      success: false,
       message: "Something went wrong!!!",
     });
   }

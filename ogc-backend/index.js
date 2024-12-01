@@ -9,6 +9,15 @@ const PPDTRouter = require("./routes/ppdtRoutes");
 const cors = require("cors");
 const profileRoutes = require("./routes/profileRoutes");
 const commentRoutes = require("./routes/commentRoutes");
+const { rateLimit } = require('express-rate-limit')
+
+const limiter = rateLimit({
+	windowMs: 15 * 60 * 1000,
+	limit: 50,
+	standardHeaders: 'draft-7',
+	legacyHeaders: false,
+})
+app.use(limiter);
 
 app.use(express.json());
 app.use(bodyParser.json());

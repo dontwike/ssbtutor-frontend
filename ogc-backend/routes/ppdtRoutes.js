@@ -1,12 +1,16 @@
 const express = require("express");
 const router = express.Router();
 const Authorization = require("../middleware/Authorization");
-const prisma = require("../model/prisma");
 const ppdt = require("../model/mongodb/ppdt");
+const user = require("../model/mongodb/user");
 const PurchasedItem = require("../model/mongodb/PurchasedItem");
+const jwt = require("jsonwebtoken");
+const User = require("../model/mongodb/user");
 
 const getUserPurchasedPPDT = async (userId) => {
-  const purchasedItems = await PurchasedItem.findOne({ userId });
+  const purchasedItems = await PurchasedItem.findOne({
+    userId,
+  });
   if (!purchasedItems) {
     return [];
   }
@@ -14,6 +18,7 @@ const getUserPurchasedPPDT = async (userId) => {
   return purchasedItems.itemId.filter((item) => item.startsWith("PPDT"));
 };
 
+//Get all PPDTS
 router.get("/ppdt", Authorization, async (req, res) => {
   try {
     const userId = req.userId;
@@ -45,20 +50,24 @@ router.get("/ppdt", Authorization, async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: "Something went wrong" });
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+    });
   }
 });
 
-
+//Get the PPDT according to the id
 router.get("/ppdt/:id", Authorization, async (req, res) => {
   try {
     const userId = req.userId;
     const id = parseInt(req.params.id, 10);
 
     if (isNaN(id)) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid ID format" });
+      return res.status(400).json({
+        success: false,
+        message: "Invalid ID format",
+      });
     }
 
     const purchasedPPDTItems = await getUserPurchasedPPDT(userId);
@@ -71,12 +80,15 @@ router.get("/ppdt/:id", Authorization, async (req, res) => {
     }
 
     // MongoDB: Get the specific PPDT post
-    const post = await ppdt.findOne({ id: id });
+    const post = await ppdt.findOne({
+      id: id,
+    });
 
     if (!post) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Post not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Post not found",
+      });
     }
 
     res.status(200).json({
@@ -85,8 +97,71 @@ router.get("/ppdt/:id", Authorization, async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: "Something went wrong" });
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+    });
   }
 });
 
-module.exports = { router };
+router.post("/buyppdt", Authorization, async (req, res) => {
+  try {
+    const userId = req.userId;
+    const findUser = await User.findOne({
+      _id: userId,
+    });
+
+    const { ppdtprice, ppdtname } = req.body;
+
+    const findPPDT = await ppdt.findOne({
+      name: ppdtname,
+    });
+
+    const findIfUserHaveThisPPDT = await PurchasedItem.findOne({
+      userId: userId,
+      itemId: {
+        $in: [findPPDT.name],
+      },
+    });
+
+    if (findIfUserHaveThisPPDT) {
+      res.status(401).json({
+        success: false,
+        message: "You already have this PPDT",
+      });
+    }
+
+    const addPPDT = await PurchasedItem.updateOne(
+      {
+        userId: userId,
+      },
+      {
+        $addToSet: { itemId: findPPDT.name },
+      }
+    );
+
+    const updatedUser = await User.updateOne(
+      {
+        _id: userId,
+      },
+      {
+        credits: findUser.credits - ppdtprice,
+      }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Successfully Purchased",
+      credits: updatedUser.credits
+    });
+  } catch (error) {
+    res.status(404).json({
+      success: false,
+      message: "Something went wrong!!!",
+    });
+  }
+});
+
+module.exports = {
+  router,
+};

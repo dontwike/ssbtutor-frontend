@@ -27,6 +27,11 @@ const PPDTMain = () => {
     fetchData();
   }, []);
 
+  async function handleUnpurchasedClick(e) {
+    alert('This is the unpurcased item u can not access it')
+    e.preventDefault();
+  } 
+
   return (
     <div className="flex mt-7 flex-wrap gap-6 items-center justify-center">
       {purchasedPosts.map((item, index) => (
@@ -36,7 +41,7 @@ const PPDTMain = () => {
       {unpurchasedPosts.map((item, index) => (
         <TabUnPurchased
           key={index}
-          link={''}
+          link={""}
           name={item.name}
           onClick={() => handleUnpurchasedClick(item.name)}
         />

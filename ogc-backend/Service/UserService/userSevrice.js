@@ -1,6 +1,6 @@
 const User = require("../../model/mongodb/user");
 
-async function getUserInfo(userId) {
+async function getUserById(userId) {
   const ifUserPresent = await User.findOne({
     _id: userId,
   });
@@ -12,6 +12,19 @@ async function getUserInfo(userId) {
   return ifUserPresent;
 }
 
-export default {
-    getUserInfo
+async function getUserByUsername(username) {
+  const ifUserPresent = await User.findOne({
+    username: username,
+  });
+
+  if (!ifUserPresent) {
+    return false;
+  }
+
+  return ifUserPresent;
+}
+
+module.exports = {
+  getUserById,
+  getUserByUsername
 }

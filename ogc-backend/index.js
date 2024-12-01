@@ -1,23 +1,14 @@
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
-const verifyToken = require("./middleware/Authorization");
-const dotenv = require("dotenv").config();
+const cors = require("cors");
+
 const AuthRouter = require("./routes/Auth");
 const CloudinaryRouter = require("./routes/Cloudinary");
 const PPDTRouter = require("./routes/ppdtRoutes");
-const cors = require("cors");
 const profileRoutes = require("./routes/profileRoutes");
 const commentRoutes = require("./routes/commentRoutes");
-const { rateLimit } = require('express-rate-limit')
-
-const limiter = rateLimit({
-	windowMs: 15 * 60 * 1000,
-	limit: 50,
-	standardHeaders: 'draft-7',
-	legacyHeaders: false,
-})
-app.use(limiter);
+const connectToDatabase = require("./model/mongodb/dbconfig");
 
 app.use(express.json());
 app.use(bodyParser.json());
@@ -34,5 +25,6 @@ app.use("/", profileRoutes.router);
 app.use("/", commentRoutes.router);
 
 app.listen(process.env.PORT, () => {
+  connectToDatabase();
   console.log("listening to port " + process.env.PORT);
 });

@@ -1,22 +1,18 @@
 const express = require("express");
 const Comment = require("../model/mongodb/comment");
-const { getUserDetails } = require("./profileRoutes");
 const router = express.Router();
-const jwt = require("jsonwebtoken");
 const User = require("../model/mongodb/user");
+const Authorization = require("../middleware/Authorization");
 
-router.post("/comments", async (req, res) => {
+router.post("/comments", Authorization, async (req, res) => {
   try {
     const { postId, parentComment, content } = req.body;
-    const token = req.header("Authorization");
-    const userId = jwt.decode(token).userId;
-    console.log(userId);
+    const userId = req.userId;
 
     //MongoDB
     const user = await User.findOne({
       _id: userId,
     });
-    console.log(user);
 
     if (!user) {
       res.status(404).send({

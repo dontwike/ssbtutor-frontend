@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../model/mongodb/user");
 const PurchasedItem = require("../model/mongodb/PurchasedItem");
+const { getUserByUsername } = require("../Service/UserService/userSevrice");
 
 // User-Registration
 router.post("/signup", async (req, res) => {
@@ -62,7 +63,7 @@ router.post("/signup", async (req, res) => {
         userId: createUser._id,
         itemId: itemsArray,
       });
-      console.log("Items created successfully:", createFreeItems);
+      // console.log("Items created successfully:", createFreeItems);
     } catch (err) {
       console.error("Error creating items:", err);
       return res.status(500).json({
@@ -89,16 +90,8 @@ router.post("/signup", async (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     const { username, password } = req.body;
-
-    //MongoDB
-    const ifUserPresent = await User.findOne({
-      username: username,
-    });
-
-    // Prisma
-    // const ifUserPresent = await prisma.user.findFirst({
-    //   where: { username: username },
-    // });
+    
+    const ifUserPresent = await getUserByUsername(username);
 
     if (!ifUserPresent) {
       console.log("Username does not exist");

@@ -2,10 +2,9 @@ const express = require("express");
 const router = express.Router();
 const Authorization = require("../middleware/Authorization");
 const ppdt = require("../model/mongodb/ppdt");
-const user = require("../model/mongodb/user");
 const PurchasedItem = require("../model/mongodb/PurchasedItem");
-const jwt = require("jsonwebtoken");
 const User = require("../model/mongodb/user");
+const { getUserById } = require("../Service/UserService/userSevrice");
 
 const getUserPurchasedPPDT = async (userId) => {
   const purchasedItems = await PurchasedItem.findOne({
@@ -107,9 +106,7 @@ router.get("/ppdt/:id", Authorization, async (req, res) => {
 router.post("/buyppdt", Authorization, async (req, res) => {
   try {
     const userId = req.userId;
-    const findUser = await User.findOne({
-      _id: userId,
-    });
+    const findUser = await getUserById(userId);
 
     const { ppdtprice, ppdtname } = req.body;
 

@@ -6,5 +6,5 @@ const PostSchema = new mongoose.Schema({
   link: { type: String, required: true },
 });
 
-const Posts = mongoose.model("Post", PostSchema);
-module.exports = Posts;
+const PPDTS = mongoose.model("PPDTS", PostSchema);
+module.exports = PPDTS;

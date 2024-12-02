@@ -4,8 +4,6 @@ const cloudinary = require("cloudinary").v2;
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const multer = require("multer");
 const express = require("express");
-const ppdt_posts = require("../model/prisma");
-const prisma = require("../model/prisma");
 const router = express.Router();
 const ppdt = require("../model/mongodb/ppdt");
 
@@ -25,13 +23,6 @@ const storage = new CloudinaryStorage({
 
 const upload = multer({ storage });
 
-// For a single file
-// router.post('/upload', upload.single('image'), (req, res) => {
-//     console.log(req.file);
-//     res.send('Done');
-// });
-
-// For multiple files
 router.post("/upload", upload.array("images", 10), async (req, res) => {
   try {
     const imgUrl = req.files[0].path;
@@ -45,21 +36,17 @@ router.post("/upload", upload.array("images", 10), async (req, res) => {
       name: "PPDT " + mongoLen,
       link: imgUrl,
     });
-
-    // Prisma
-    // const data = await ppdt_posts.PPDTModel.findMany();
-    // let length = data.length + 1;
-
-    // const newPost = await prisma.PPDTModel.create({
-    //   data: {
-    //     id: length,
-    //     name: "PPDT " + length,
-    //     link: imgUrl,
-    //   },
-    // });
     res.send("Upload completed successfully!!!");
   } catch (err) {
     res.send(err.message);
+  }
+});
+
+router.post('/watupload', function(req, res) {
+  try {
+    
+  } catch (error) {
+    
   }
 });
 

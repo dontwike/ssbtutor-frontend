@@ -8,6 +8,7 @@ const CloudinaryRouter = require("./routes/Cloudinary");
 const PPDTRouter = require("./routes/ppdtRoutes");
 const profileRoutes = require("./routes/profileRoutes");
 const commentRoutes = require("./routes/commentRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
 const connectToDatabase = require("./model/mongodb/dbconfig");
 
 app.use(express.json());
@@ -23,6 +24,7 @@ app.use("/", CloudinaryRouter.router);
 app.use("/", PPDTRouter.router);
 app.use("/", profileRoutes.router);
 app.use("/", commentRoutes.router);
+app.use('/', paymentRoutes.app)
 
 app.listen(process.env.PORT, () => {
   connectToDatabase();

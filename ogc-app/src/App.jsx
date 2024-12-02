@@ -9,6 +9,7 @@ import Cloudinary from "./pages/Cloudinary.jsx";
 import ComingSoon from "./pages/ComingSoon.jsx";
 import PrivateRoute from "./components/PrivateRoutes.jsx";
 import Subscribe from "./pages/PricingDashboard.jsx";
+import PaymentPage from "./pages/PaymentPage.jsx";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Signin />} />
           <Route path="/subscribe" element={<Subscribe />} />
+          <Route path="/payment" element={<PaymentPage />} />
           <Route path="/ppdt" element={<PrivateRoute><PPDTMain /></PrivateRoute>} />
           <Route path="/ppdt/:id" element={<PPDT />} />
           <Route path="/upload" element={<PrivateRoute><Cloudinary /></PrivateRoute>} />

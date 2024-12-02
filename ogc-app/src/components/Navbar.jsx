@@ -86,7 +86,7 @@ const Navbar = () => {
                         <li><Link to="/subscribe">SUBSCRIBE</Link></li>
                     </ul>
                 </div>
-                <Link className="btn btn-ghost text-xl text-[#ffffffe7]" to="/">SSBPG</Link>
+                <Link className="btn btn-ghost text-xl text-[#ffffffe7]" to="/">ssbtutor</Link>
             </div>
             <div className="navbar-center hidden lg:flex">
                 <ul className="menu menu-horizontal px-1">

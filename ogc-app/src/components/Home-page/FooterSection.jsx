@@ -8,7 +8,7 @@ const FooterSection = () => {
         <div className="container mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div>
-              <h3 className="text-2xl font-bold">Cento</h3>
+              <h3 className="text-2xl font-bold">ssbtutor</h3>
               <p className="mt-2 text-gray-400">
                 The perfect template for your startup or project.
               </p>

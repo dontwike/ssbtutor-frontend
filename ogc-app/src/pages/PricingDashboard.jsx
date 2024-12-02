@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import PaymentPage from './PaymentPage';
 
 const PricingCard = ({ title, description, features, buttonText, buttonAction }) => {
   return (
@@ -70,7 +71,7 @@ const PricingDashboard = () => {
         '24/7 Dedicated Customer Support',
       ],
       buttonText: 'Buy Premium',
-      buttonAction: () => alert('Buy Premium Plan'),
+      buttonAction: () => navigate('/payment'),
     },
   ];
 

@@ -1,7 +1,9 @@
 import axios from "axios";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const PaymentPage = () => {
+  const navigate = useNavigate();
   const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID;
 
   const handlePayment = async () => {
@@ -16,8 +18,8 @@ const PaymentPage = () => {
         key: RAZORPAY_KEY_ID,
         amount: order.amount,
         currency: order.currency,
-        name: "Your Company Name",
-        description: "Payment for your order",
+        name: "WIK Technologies",
+        description: "Payment for your credits",
         order_id: order.id,
         handler: async (response) => {
           try {
@@ -34,7 +36,21 @@ const PaymentPage = () => {
 
             if (result.success) {
               alert("Payment successful!");
-              
+              const purchasedCredits = await axios.post(
+                "http://localhost:8080/purchase-credits",
+                {},
+                {
+                  headers: {
+                    Authorization: localStorage.getItem("token"),
+                  },
+                }
+              );
+
+              if (purchasedCredits.data.success) {
+                navigate("/ppdt");
+              } else {
+                alert("Some error occurred, contact owner.");
+              }
             } else {
               alert("Payment verification failed!");
             }

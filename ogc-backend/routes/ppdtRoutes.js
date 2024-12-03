@@ -20,7 +20,7 @@ const getUserPurchasedPPDT = async (userId) => {
 //Get all PPDTS
 router.get("/ppdt", Authorization, async (req, res) => {
   try {
-    console.log('ppdt');
+    console.log("ppdt");
     const userId = req.userId;
 
     const purchasedPPDTItems = await getUserPurchasedPPDT(userId);
@@ -60,7 +60,7 @@ router.get("/ppdt", Authorization, async (req, res) => {
 //Get the PPDT according to the id
 router.get("/ppdt/:id", Authorization, async (req, res) => {
   try {
-    console.log('ppdt id');
+    console.log("ppdt id");
     const userId = req.userId;
     const id = parseInt(req.params.id, 10);
 
@@ -107,7 +107,7 @@ router.get("/ppdt/:id", Authorization, async (req, res) => {
 
 router.post("/buyppdt", Authorization, async (req, res) => {
   try {
-    console.log('buy ppdt');
+    console.log("buy ppdt");
     const userId = req.userId;
     const findUser = await getUserById(userId);
 
@@ -152,7 +152,7 @@ router.post("/buyppdt", Authorization, async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Successfully Purchased",
-      credits: updatedUser.credits
+      credits: updatedUser.credits,
     });
   } catch (error) {
     res.status(404).json({

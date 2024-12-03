@@ -24,7 +24,7 @@ app.use("/", CloudinaryRouter.router);
 app.use("/", PPDTRouter.router);
 app.use("/", profileRoutes.router);
 app.use("/", commentRoutes.router);
-app.use('/', paymentRoutes.app)
+app.use("/", paymentRoutes.app);
 
 app.listen(process.env.PORT, () => {
   connectToDatabase();

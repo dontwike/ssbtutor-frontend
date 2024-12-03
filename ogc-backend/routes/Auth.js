@@ -9,7 +9,7 @@ const { getUserByUsername } = require("../Service/UserService/userSevrice");
 // User-Registration
 router.post("/signup", async (req, res) => {
   try {
-    console.log('signup');
+    console.log("signup");
     const { username, password, name, phno } = req.body;
 
     const ifUsernamePresent = await User.findOne({ username });
@@ -85,7 +85,7 @@ router.post("/signup", async (req, res) => {
 // User-Login
 router.post("/login", async (req, res) => {
   try {
-    console.log('login');
+    console.log("login");
     const { username, password } = req.body;
 
     const ifUserPresent = await getUserByUsername(username);

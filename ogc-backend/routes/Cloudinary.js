@@ -42,12 +42,9 @@ router.post("/upload", upload.array("images", 10), async (req, res) => {
   }
 });
 
-router.post('/watupload', function(req, res) {
+router.post("/watupload", function (req, res) {
   try {
-    
-  } catch (error) {
-    
-  }
+  } catch (error) {}
 });
 
 module.exports = {

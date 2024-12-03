@@ -6,7 +6,7 @@ const User = require("../model/mongodb/user");
 
 router.get("/getCredits", Authorization, async (req, res) => {
   try {
-    console.log('credits');
+    console.log("credits");
     const userId = req.userId;
 
     const user = await getUserById(userId);
@@ -22,7 +22,7 @@ router.get("/getCredits", Authorization, async (req, res) => {
       success: true,
       message: "User found!",
       credits: user.credits,
-      user: user
+      user: user,
     });
   } catch (e) {
     res.status(400).json({
@@ -34,7 +34,7 @@ router.get("/getCredits", Authorization, async (req, res) => {
 
 router.post("/purchase-credits", Authorization, async (req, res) => {
   try {
-    console.log('purchase credit');
+    console.log("purchase credit");
     const userId = req.userId;
     const user = await getUserById(userId);
 

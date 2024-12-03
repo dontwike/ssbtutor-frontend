@@ -32,7 +32,10 @@ const HeroSection = () => {
                 >
                   Signup
                 </button>
-                <button className="px-8 py-3 bg-blue-500 text-white rounded-lg font-semibold text-lg hover:bg-blue-600" onClick={handleLogin}>
+                <button
+                  className="px-8 py-3 bg-blue-500 text-white rounded-lg font-semibold text-lg hover:bg-blue-600"
+                  onClick={handleLogin}
+                >
                   Login
                 </button>
               </div>

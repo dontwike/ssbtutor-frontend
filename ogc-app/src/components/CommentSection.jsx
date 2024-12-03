@@ -6,31 +6,30 @@ import { Mic, MicOff } from "lucide-react";
 const CommentSection = () => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
-  const [replyTo, setReplyTo] = useState(null); // Tracks which comment is being replied to
-  const [visibleComments, setVisibleComments] = useState({}); // Tracks visibility of child comments
+  const [replyTo, setReplyTo] = useState(null);
+  const [visibleComments, setVisibleComments] = useState({});
   const { id: postId } = useParams();
   const [isListening, setIsListening] = useState(false);
   const [recognition, setRecognition] = useState(null);
 
   useEffect(() => {
-    const SpeechRecognition = 
-      window.SpeechRecognition || 
-      window.webkitSpeechRecognition;
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
 
     if (SpeechRecognition) {
       const recognitionInstance = new SpeechRecognition();
       recognitionInstance.continuous = false;
       recognitionInstance.interimResults = false;
-      recognitionInstance.lang = 'en-US';
+      recognitionInstance.lang = "en-US";
 
       recognitionInstance.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
-        setNewComment(prev => prev + " " + transcript);
+        setNewComment((prev) => prev + " " + transcript);
         setIsListening(false);
       };
 
       recognitionInstance.onerror = (event) => {
-        console.error('Speech recognition error:', event.error);
+        console.error("Speech recognition error:", event.error);
         setIsListening(false);
       };
 
@@ -42,10 +41,11 @@ const CommentSection = () => {
     const fetchComments = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/comments/${postId}`, {
+          `http://localhost:8080/comments/${postId}`,
+          {
             headers: {
-              Authorization: localStorage.getItem('token')
-            }
+              Authorization: localStorage.getItem("token"),
+            },
           }
         );
         const data = await response.json();
@@ -55,18 +55,18 @@ const CommentSection = () => {
           console.error("Expected an array, got:", data);
         }
       } catch (err) {
-        console.error("Error fetching comments:", err); 
+        console.error("Error fetching comments:", err);
       }
     };
     fetchComments();
-  }, [postId, comments]);
+  }, [postId]);
 
   const startVoiceInput = () => {
     if (recognition) {
       setIsListening(true);
       recognition.start();
     } else {
-      alert('Voice input is not supported in this browser');
+      alert("Voice input is not supported in this browser");
     }
   };
 
@@ -186,52 +186,52 @@ const CommentSection = () => {
 
   return (
     <section className="bg-gray-900 py-8 lg:py-16 antialiased">
-    <div className="max-w-2xl mx-auto px-4">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">
-          Discussion
-        </h2>
-      </div>
-      <form className="mb-6" onSubmit={handleNewComment}>
-        <div className="relative">
-          <textarea
-            rows="6"
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            className="w-full px-3 py-2 text-sm text-gray-900 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 dark:text-white bg-gray-900 pr-12"
-            placeholder="Write a comment..."
-            required
-          ></textarea>
-          <div className="absolute top-2 right-2">
-            {isListening ? (
-              <button 
-                type="button" 
-                onClick={stopVoiceInput}
-                className="text-red-500 hover:text-red-700"
-              >
-                <MicOff size={20} />
-              </button>
-            ) : (
-              <button 
-                type="button" 
-                onClick={startVoiceInput}
-                className="text-primary-500 hover:text-primary-700"
-              >
-                <Mic size={20} />
-              </button>
-            )}
-          </div>
+      <div className="max-w-2xl mx-auto px-4">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">
+            Discussion
+          </h2>
         </div>
-        <button
-          type="submit"
-          className="mt-2 inline-flex items-center py-2.5 px-4 text-xs font-medium text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
-        >
-          Post Comment
-        </button>
-      </form>
-      {renderComments(comments)}
-    </div>
-  </section>
+        <form className="mb-6" onSubmit={handleNewComment}>
+          <div className="relative">
+            <textarea
+              rows="6"
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              className="w-full px-3 py-2 text-sm text-gray-900 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 dark:text-white bg-gray-900 pr-12"
+              placeholder="Write a comment..."
+              required
+            ></textarea>
+            <div className="absolute top-2 right-2">
+              {isListening ? (
+                <button
+                  type="button"
+                  onClick={stopVoiceInput}
+                  className="text-red-500 hover:text-red-700"
+                >
+                  <MicOff size={20} />
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={startVoiceInput}
+                  className="text-primary-500 hover:text-primary-700"
+                >
+                  <Mic size={20} />
+                </button>
+              )}
+            </div>
+          </div>
+          <button
+            type="submit"
+            className="mt-2 inline-flex items-center py-2.5 px-4 text-xs font-medium text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
+          >
+            Post Comment
+          </button>
+        </form>
+        {renderComments(comments)}
+      </div>
+    </section>
   );
 };
 

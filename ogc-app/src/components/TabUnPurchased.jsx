@@ -17,10 +17,15 @@ const TabUnPurchased = (props) => {
     if (credits > ppdtprice) {
       const token = localStorage.getItem("token");
       if (token) {
-        const res = await axios.post("http://localhost:8080/buyppdt",{ ppdtprice, ppdtname }, {
+        const res = await axios.post(
+          "http://localhost:8080/buyppdt",
+          { ppdtprice, ppdtname },
+          {
             headers: {
               Authorization: `${token}`,
-            }});
+            },
+          }
+        );
 
         setCredits(res.data.credits);
         window.location.reload();

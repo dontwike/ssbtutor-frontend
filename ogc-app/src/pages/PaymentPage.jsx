@@ -2,10 +2,9 @@ import axios from "axios";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
-import { UserAtom } from '../atoms/UserAtom'
+import { UserAtom } from "../atoms/UserAtom";
 
 const PaymentPage = () => {
-
   const navigate = useNavigate();
   const userValue = useRecoilValue(UserAtom);
   const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID;

@@ -9,9 +9,9 @@ const { getUserByUsername } = require("../Service/UserService/userSevrice");
 // User-Registration
 router.post("/signup", async (req, res) => {
   try {
+    console.log('signup');
     const { username, password, name, phno } = req.body;
 
-    // MongoDB checks for existing username or phone number
     const ifUsernamePresent = await User.findOne({ username });
     const ifPhoneNumberPresent = await User.findOne({ phno });
 
@@ -31,7 +31,6 @@ router.post("/signup", async (req, res) => {
 
     const hashPass = await bcrypt.hash(password, 10);
 
-    // MongoDB: Creating new user
     const createUser = await User.create({
       username,
       password: hashPass,
@@ -44,7 +43,6 @@ router.post("/signup", async (req, res) => {
     const items = ["PPDT", "WAT", "TAT", "SRT"];
     const itemsArray = [];
 
-    // Loop through the items array to create items
     items.forEach((itemType) => {
       let maxLimit;
       if (itemType === "PPDT") maxLimit = 10;
@@ -57,13 +55,11 @@ router.post("/signup", async (req, res) => {
       }
     });
 
-    // Creating purchased items
     try {
       const createFreeItems = await PurchasedItem.create({
         userId: createUser._id,
         itemId: itemsArray,
       });
-      // console.log("Items created successfully:", createFreeItems);
     } catch (err) {
       console.error("Error creating items:", err);
       return res.status(500).json({
@@ -89,12 +85,12 @@ router.post("/signup", async (req, res) => {
 // User-Login
 router.post("/login", async (req, res) => {
   try {
+    console.log('login');
     const { username, password } = req.body;
-    
+
     const ifUserPresent = await getUserByUsername(username);
 
     if (!ifUserPresent) {
-      console.log("Username does not exist");
       return res.status(400).json({
         success: false,
         message: "Username does not exist. Please sign up!",

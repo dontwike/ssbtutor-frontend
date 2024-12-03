@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Tab from "../components/Tab";
-import Alert from "../components/Alert";
 import axios from "axios";
 import TabUnPurchased from "../components/TabUnPurchased";
 
 const PPDTMain = () => {
   const [purchasedPosts, setPurchasedPosts] = useState([]);
   const [unpurchasedPosts, setUnpurchasedPosts] = useState([]);
+  const effectRan = useRef(false); // Prevent double execution
 
   useEffect(() => {
+    if (effectRan.current) return; // Skip subsequent calls
+    effectRan.current = true; // Set flag
     const fetchData = async () => {
       try {
         const response = await axios.get("http://localhost:8080/ppdt", {
@@ -28,9 +30,9 @@ const PPDTMain = () => {
   }, []);
 
   async function handleUnpurchasedClick(e) {
-    alert('This is the unpurcased item u can not access it')
+    alert("This is the unpurcased item u can not access it");
     e.preventDefault();
-  } 
+  }
 
   return (
     <div className="flex mt-7 flex-wrap gap-6 items-center justify-center">

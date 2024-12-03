@@ -1,9 +1,13 @@
 import axios from "axios";
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import { UserAtom } from '../atoms/UserAtom'
 
 const PaymentPage = () => {
+
   const navigate = useNavigate();
+  const userValue = useRecoilValue(UserAtom);
   const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID;
 
   const handlePayment = async () => {
@@ -59,9 +63,9 @@ const PaymentPage = () => {
           }
         },
         prefill: {
-          name: "John Doe",
-          email: "john@example.com",
-          contact: "9808407890",
+          name: userValue.name,
+          email: userValue.username,
+          contact: userValue.phno,
         },
         theme: {
           color: "#3399cc",

@@ -16,9 +16,13 @@ const Login = () => {
                 password: password
             });
 
-            const token = res.data.token;
-            localStorage.setItem('token', token);
-            await navigate('/');
+            if(res.data.token) {
+                const token = res.data.token;
+                localStorage.setItem('token', token);
+                await navigate('/');
+            } else {
+                alert('Something went wrong! \nPlease try again');
+            }
             window.location.reload();
         } catch (error) {
             console.log(error);

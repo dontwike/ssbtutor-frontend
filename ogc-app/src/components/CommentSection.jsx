@@ -5,15 +5,20 @@ import { useParams } from "react-router-dom";
 const CommentSection = () => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
-  const [replyTo, setReplyTo] = useState(null); // Tracks which comment is being replied to
-  const [visibleComments, setVisibleComments] = useState({}); // Tracks visibility of child comments
+  const [replyTo, setReplyTo] = useState(null);
+  const [visibleComments, setVisibleComments] = useState({});
   const { id: postId } = useParams();
 
   useEffect(() => {
     const fetchComments = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/comments/${postId}`
+          `http://localhost:8080/comments/${postId}`,
+          {
+            headers: {
+              Authorization: localStorage.getItem("token"),
+            },
+          }
         );
         const data = await response.json();
         if (Array.isArray(data)) {
@@ -22,11 +27,11 @@ const CommentSection = () => {
           console.error("Expected an array, got:", data);
         }
       } catch (err) {
-        console.error("Error fetching comments:", err); 
+        console.error("Error fetching comments:", err);
       }
     };
     fetchComments();
-  }, [postId, comments]);
+  }, [postId]);
 
   const toggleVisibility = (parentId) => {
     setVisibleComments((prev) => ({
@@ -154,7 +159,8 @@ const CommentSection = () => {
           ></textarea>
           <button
             type="submit"
-            className="mt-2 inline-flex items-center py-2.5 px-4 text-xs font-medium text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
+            className="mt-2 inline-flex items-center py-2.5 px-4 text-xs font-medium text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
+          >
             Post Comment
           </button>
         </form>

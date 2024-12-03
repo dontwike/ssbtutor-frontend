@@ -1,16 +1,18 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { IsLoggedIn } from "../atoms/LoggedInAtom";
 import { CreditAtom } from "../atoms/CreditsAtom";
 import axios from "axios";
+import { UserAtom } from "../atoms/UserAtom";
 
 const Navbar = () => {
     const [isloggedIn, setIsLoggedIn] = useRecoilState(IsLoggedIn);
     const [credits, setCredits] = useRecoilState(CreditAtom);
+    const [UserDetails, setUserDetails] = useRecoilState(UserAtom);
     const navigate = useNavigate();
+    const effectRan = useRef(false); // Prevent double execution
 
-    // Function to fetch credits
     const getCredits = async (token) => {
         try {
             const res = await axios.get("http://localhost:8080/getCredits", {
@@ -18,14 +20,18 @@ const Navbar = () => {
                     Authorization: `${token}`,
                 },
             });
-            setCredits(res.data.credits); // Update credits state
+            console.log(res.data);
+            setCredits(res.data.credits);
+            setUserDetails(res.data.user);
         } catch (error) {
             console.error("Error fetching credits:", error);
         }
     };
 
-
     useEffect(() => {
+        if (effectRan.current) return; // Skip subsequent calls
+        effectRan.current = true; // Set flag
+
         const token = localStorage.getItem("token");
         if (token) {
             setIsLoggedIn(true);
@@ -33,9 +39,8 @@ const Navbar = () => {
         } else {
             setIsLoggedIn(false);
         }
-    }, [isloggedIn, credits]);
+    }, []); // Run only once on mount
 
-    // Handle logout
     const handleLogout = () => {
         localStorage.removeItem("token");
         setIsLoggedIn(false);

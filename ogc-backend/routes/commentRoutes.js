@@ -6,6 +6,7 @@ const Authorization = require("../middleware/Authorization");
 
 router.post("/comments", Authorization, async (req, res) => {
   try {
+    console.log("comment");
     const { postId, parentComment, content } = req.body;
     const userId = req.userId;
 
@@ -34,8 +35,9 @@ router.post("/comments", Authorization, async (req, res) => {
 });
 
 // Get comments for a post
-router.get("/comments/:postId", async (req, res) => {
+router.get("/comments/:postId", Authorization, async (req, res) => {
   try {
+    console.log("child comments");
     const { postId } = req.params;
     const comments = await Comment.find({ postId });
     res.status(200).json(comments);

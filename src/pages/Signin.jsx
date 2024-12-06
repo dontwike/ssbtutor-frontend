@@ -44,7 +44,7 @@ export default function Signin() {
       setPassword("");
       setName("");
       setPhno("");
-      navigate("/ppdt");
+      navigate("ppdt");
     } catch (error) {
       console.error("Signup error:", error?.response?.data?.message || error.message);
       setError(error?.response?.data?.message || "An error occurred. Please try again.");

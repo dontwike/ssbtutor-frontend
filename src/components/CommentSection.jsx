@@ -23,13 +23,14 @@ const CommentSection = () => {
       recognitionInstance.lang = "en-US";
 
       recognitionInstance.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
+        // Optional chaining and null check for event.results
+        const transcript = event?.results?.[0]?.[0]?.transcript || "";
         setNewComment((prev) => prev + " " + transcript);
         setIsListening(false);
       };
 
       recognitionInstance.onerror = (event) => {
-        console.error("Speech recognition error:", event.error);
+        console.error("Speech recognition error:", event?.error || "Unknown error");
         setIsListening(false);
       };
 
@@ -44,18 +45,18 @@ const CommentSection = () => {
           `https://ssbtutor-backend.onrender.com/comments/${postId}`,
           {
             headers: {
-              Authorization: localStorage.getItem("token"),
+              Authorization: localStorage.getItem("token") || "",
             },
           }
         );
         const data = await response.json();
-        if (data.comments && Array.isArray(data.comments)) {
+        if (Array.isArray(data?.comments)) {
           setComments(data.comments);
         } else {
           console.error("Expected an array, got:", data);
         }
       } catch (err) {
-        console.error("Error fetching comments:", err);
+        console.error("Error fetching comments:", err?.message || err);
       }
     };
     fetchComments();
@@ -81,7 +82,7 @@ const CommentSection = () => {
   const toggleVisibility = (parentId) => {
     setVisibleComments((prev) => ({
       ...prev,
-      [parentId]: !prev[parentId], // Toggle visibility for this parent
+      [parentId]: !prev?.[parentId], // Optional chaining
     }));
   };
 
@@ -97,28 +98,31 @@ const CommentSection = () => {
         },
         {
           headers: {
-            Authorization: localStorage.getItem("token"),
+            Authorization: localStorage.getItem("token") || "",
           },
         }
       );
-      if (response.ok) {
-        const addedComment = await response.json();
-        setComments([...comments, addedComment]);
+      
+      // Optional chaining for response
+      if (response?.data) {
+        const addedComment = response.data;
+        setComments((prevComments) => [...prevComments, addedComment]);
         setNewComment("");
         setReplyTo(null);
       }
+      
       window.location.reload();
     } catch (error) {
-      console.error("Error adding comment:", error);
+      console.error("Error adding comment:", error?.message || error);
     }
   };
 
   const renderComments = (comments, parentId = null) => {
     return comments
-      .filter((comment) => comment.parentComment === parentId)
+      .filter((comment) => comment?.parentComment === parentId)
       .map((comment) => (
         <article
-          key={comment._id}
+          key={comment?._id}
           className={`p-6 mb-3 ${
             parentId ? "ml-6 lg:ml-12" : ""
           } text-base bg-white rounded-lg dark:bg-gray-900`}
@@ -126,33 +130,35 @@ const CommentSection = () => {
           <footer className="flex justify-between items-center mb-2">
             <div className="flex items-center">
               <p className="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">
-                {comment.username || "Anonymous"}
+                {comment?.username || "Anonymous"}
               </p>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                <time dateTime={comment.timestamp}>
-                  {new Date(comment.timestamp).toLocaleDateString()}
+                <time dateTime={comment?.timestamp}>
+                  {comment?.timestamp 
+                    ? new Date(comment.timestamp).toLocaleDateString() 
+                    : "Date Unknown"}
                 </time>
               </p>
             </div>
           </footer>
-          <p className="text-gray-500 dark:text-gray-400">{comment.content}</p>
+          <p className="text-gray-500 dark:text-gray-400">{comment?.content || "No content"}</p>
           <div className="flex items-center mt-4 space-x-4">
             <button
               type="button"
-              onClick={() => toggleVisibility(comment._id)}
+              onClick={() => toggleVisibility(comment?._id)}
               className="text-sm text-gray-500 hover:underline dark:text-gray-400 font-medium"
             >
-              {visibleComments[comment._id] ? "Hide Replies" : "View Replies"}
+              {visibleComments?.[comment?._id] ? "Hide Replies" : "View Replies"}
             </button>
             <button
               type="button"
-              onClick={() => setReplyTo(comment._id)}
+              onClick={() => setReplyTo(comment?._id)}
               className="text-sm text-gray-500 hover:underline dark:text-gray-400 font-medium"
             >
               Reply
             </button>
           </div>
-          {replyTo === comment._id && (
+          {replyTo === comment?._id && (
             <form className="mt-4" onSubmit={handleNewComment}>
               <textarea
                 rows="3"
@@ -160,7 +166,7 @@ const CommentSection = () => {
                 onChange={(e) => setNewComment(e.target.value)}
                 className="px-2 py-1 w-full text-sm text-gray-900 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 dark:text-white dark:bg-gray-800"
                 placeholder={`Replying to ${
-                  comment.username || "Anonymous"
+                  comment?.username || "Anonymous"
                 }...`}
                 required
               ></textarea>
@@ -179,8 +185,8 @@ const CommentSection = () => {
               </button>
             </form>
           )}
-          {visibleComments[comment._id] &&
-            renderComments(comments, comment._id)}
+          {visibleComments?.[comment?._id] &&
+            renderComments(comments, comment?._id)}
         </article>
       ));
   };

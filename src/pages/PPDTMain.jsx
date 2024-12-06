@@ -19,8 +19,8 @@ const PPDTMain = () => {
           },
         });
 
-        setPurchasedPosts(response.data.purchasedPosts);
-        setUnpurchasedPosts(response.data.unPurchasedPosts);
+        setPurchasedPosts(response.data?.purchasedPosts);
+        setUnpurchasedPosts(response.data?.unPurchasedPosts);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -37,15 +37,15 @@ const PPDTMain = () => {
   return (
     <div className="flex mt-7 flex-wrap gap-6 items-center justify-center">
       {purchasedPosts?.map((item, index) => (
-        <Tab key={index} link={item.id} name={item.name} />
+        <Tab key={index} link={item?.id} name={item?.name} />
       ))}
 
       {unpurchasedPosts?.map((item, index) => (
         <TabUnPurchased
           key={index}
           link={""}
-          name={item.name}
-          onClick={() => handleUnpurchasedClick(item.name)}
+          name={item?.name}
+          onClick={() => handleUnpurchasedClick(item?.name)}
         />
       ))}
     </div>

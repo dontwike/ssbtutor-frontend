@@ -3,7 +3,7 @@
   "name": "ogc",
   "routes": [
     {
-      "src": "/(.*)",
+      "src": "/",
       "dest": "/"
     },
     {

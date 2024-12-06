@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Tab from "../components/Tab";
 import axios from "axios";
@@ -11,52 +11,60 @@ const PPDTMain = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+
+
+
   useEffect(() => {
-    const fetchData = async () => {
-      // Get token from localStorage with null check
-      const token = localStorage.getItem("token");
-      
-      // If no token is found, redirect to login
-      if (!token) {
-        navigate("/login");
-        return;
-      }
+    fetchData();
+    console.log("PPDTMain !!!!")
+  }, []);
 
-      try {
-        setIsLoading(true);
-        const response = await axios.get("https://ssbtutor-backend.onrender.com/ppdt", {
-          headers: {
-            Authorization: token,
-          },
-        });
 
-        // Safely handle potentially undefined data
+  const fetchData = async () => {
+    // Get token from localStorage with null check
+    const token = localStorage.getItem("token");
+    
+    // If no token is found, redirect to login
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const response = await axios.get("https://ssbtutor-backend.onrender.com/ppdt", {
+        headers: {
+          Authorization: token,
+        },
+      });
+         
+      if(response.status === 200){
+        console.log("PPDTMAIN : "+ response?.data)
         const purchasedData = response?.data?.purchasedPosts ?? [];
         const unpurchasedData = response?.data?.unPurchasedPosts ?? [];
-
+  
         setPurchasedPosts(purchasedData);
         setUnpurchasedPosts(unpurchasedData);
         setError(null);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        
-        // Check for specific error types
-        if (error.response?.status === 401) {
-          // Unauthorized - likely expired or invalid token
-          localStorage.removeItem("token");
-          navigate("/login");
-        } else if (error.response?.status === 404) {
-          setError("Resource not found. Please contact support.");
-        } else {
-          setError("Failed to fetch posts. Please try again later.");
-        }
-      } finally {
-        setIsLoading(false);
       }
-    };
-
-    fetchData();
-  }, [navigate]);
+     
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      
+      // Check for specific error types
+      if (error.response?.status === 401) {
+        // Unauthorized - likely expired or invalid token
+        localStorage.removeItem("token");
+        navigate("/login");
+      } else if (error.response?.status === 404) {
+        setError("Resource not found. Please contact support.");
+      } else {
+        setError("Failed to fetch posts. Please try again later.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleUnpurchasedClick = (itemName) => {
     alert(`You cannot access the unpurchased item: ${itemName || 'Unknown'}`);

@@ -11,6 +11,7 @@ import PrivateRoute from "./components/PrivateRoutes.jsx";
 import Subscribe from "./pages/PricingDashboard.jsx";
 import PaymentPage from "./pages/PaymentPage.jsx";
 import Feedback from "./pages/Feedback.jsx";
+import './App.css'
 
 function App() {
   return (

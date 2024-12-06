@@ -125,14 +125,14 @@ const CommentSection = () => {
           key={comment?._id}
           className={`p-6 mb-3 ${
             parentId ? "ml-6 lg:ml-12" : ""
-          } text-base bg-white rounded-lg dark:bg-gray-900`}
+          } text-base bg-transparent  rounded-lg dark:bg-gray-900`}
         >
           <footer className="flex justify-between items-center mb-2">
             <div className="flex items-center">
-              <p className="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">
+              <p className="inline-flex items-center mr-3 text-sm text-gray-100 dark:text-white font-semibold">
                 {comment?.username || "Anonymous"}
               </p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-sm text-gray-200 dark:text-gray-300">
                 <time dateTime={comment?.timestamp}>
                   {comment?.timestamp 
                     ? new Date(comment.timestamp).toLocaleDateString() 
@@ -141,7 +141,7 @@ const CommentSection = () => {
               </p>
             </div>
           </footer>
-          <p className="text-gray-500 dark:text-gray-400">{comment?.content || "No content"}</p>
+          <p className="text-gray-200 dark:text-gray-400">{comment?.content || "No content"}</p>
           <div className="flex items-center mt-4 space-x-4">
             <button
               type="button"
@@ -164,7 +164,7 @@ const CommentSection = () => {
                 rows="3"
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
-                className="px-2 py-1 w-full text-sm text-gray-900 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 dark:text-white dark:bg-gray-800"
+                className="w-full px-3 py-2 text-sm text-gray-100 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 dark:text-white bg-gray-900 pr-12"
                 placeholder={`Replying to ${
                   comment?.username || "Anonymous"
                 }...`}
@@ -179,7 +179,7 @@ const CommentSection = () => {
               <button
                 type="button"
                 onClick={() => setReplyTo(null)}
-                className="ml-2 text-sm text-gray-500 hover:underline dark:text-gray-400"
+                className="ml-2 text-sm text-gray-200 hover:underline dark:text-gray-400"
               >
                 Cancel
               </button>
@@ -205,7 +205,7 @@ const CommentSection = () => {
               rows="6"
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
-              className="w-full px-3 py-2 text-sm text-gray-900 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 dark:text-white bg-gray-900 pr-12"
+              className="w-full px-3 py-2 text-sm text-gray-100 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 dark:text-white bg-gray-900 pr-12"
               placeholder="Write a comment..."
               required
             ></textarea>
@@ -222,7 +222,7 @@ const CommentSection = () => {
                 <button
                   type="button"
                   onClick={startVoiceInput}
-                  className="text-primary-500 hover:text-primary-700"
+                  className="text-gray-500 hover:text-gray-100"
                 >
                   <Mic size={20} />
                 </button>
@@ -231,7 +231,7 @@ const CommentSection = () => {
           </div>
           <button
             type="submit"
-            className="mt-2 inline-flex items-center py-2.5 px-4 text-xs font-medium text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
+            className="btn btn-primary mt-3"
           >
             Post Comment
           </button>

@@ -49,7 +49,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="navbar bg-base-100 py-3">
+    <div className="navbar py-3 bg-[#1D232A]">
       <div className="navbar-start">
         <div className="dropdown">
           <button
@@ -74,7 +74,7 @@ const Navbar = () => {
           </button>
           <ul
             tabIndex={0}
-            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
+            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow text-[#a7b2c0]"
           >
             <li>
               <Link to="/ppdt">PP&DT</Link>
@@ -115,7 +115,7 @@ const Navbar = () => {
         </Link>
       </div>
       <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1">
+        <ul className="menu menu-horizontal px-1 text-[#a7b2c0]">
           <li>
             <Link to="/ppdt">PP&DT</Link>
           </li>
@@ -146,16 +146,16 @@ const Navbar = () => {
         </ul>
       </div>
       <div className="navbar-end">
-        <div className="btn mr-2 md:mr-5">
+        <div className="btn mr-2 border-none md:mr-5 bg-transparent text-white hover:bg-[#1D232A] cursor-default">
           Cr
-          <div className="badge">{credits || 0}</div>
+          <div className="badge bg-[#1D232A] text-white border-none">{credits || 0}</div>
         </div>
         {isloggedIn ? (
-          <button className="btn" onClick={handleLogout}>
+          <button className="btn bg-[#1D232A] text-white" onClick={handleLogout}>
             Logout
           </button>
         ) : (
-          <Link className="btn" to="/login">
+          <Link className="btn bg-[#1D232A] text-white" to="/login">
             Login
           </Link>
         )}

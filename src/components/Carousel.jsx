@@ -25,26 +25,29 @@ const Carousel = () => {
 
   const picIntervalRef = useRef(null);
   const writeIntervalRef = useRef(null);
+
+  // Prevent overlapping intervals
+  const picTimerActive = useRef(false);
+  const writeTimerActive = useRef(false);
+
   const { id } = useParams();
 
   useEffect(() => {
     const getData = async () => {
       try {
         setIsLoading(true);
-        
-        // Comprehensive null and token checks
+
         const token = localStorage.getItem("token");
         if (!token) {
           throw new Error("No authentication token found");
         }
 
-        // Validate id
         if (!id) {
           throw new Error("No post ID provided");
         }
 
         const response = await axios.get(
-          `https://ssbtutor-backend.onrender.com/ppdt/${id}`, 
+          `https://ssbtutor-backend.onrender.com/ppdt/${id}`,
           {
             headers: {
               Authorization: token,
@@ -52,7 +55,6 @@ const Carousel = () => {
           }
         );
 
-        // Null checks on response data
         if (response?.data?.post) {
           setData(response.data.post);
         } else {
@@ -63,56 +65,75 @@ const Carousel = () => {
       } catch (error) {
         console.error("Error fetching data:", error);
         setError(error.message || "Failed to fetch data");
-        setData(null); // Reset data on error
+        setData(null);
       } finally {
         setIsLoading(false);
       }
     };
 
     getData();
+
+    return () => {
+      // Clear all timers when unmounting
+      clearInterval(picIntervalRef.current);
+      clearInterval(writeIntervalRef.current);
+      picTimerActive.current = false;
+      writeTimerActive.current = false;
+    };
   }, [id]);
 
-  // Start the picture timer
   const startPicTimer = useCallback(() => {
+    if (picTimerActive.current) return; // Prevent multiple intervals
+    picTimerActive.current = true;
+
     setPicSeconds(30);
     setShowPic(true);
     setButtonDisabledPic(true);
     setButtonDisabledWrite(true);
 
     picIntervalRef.current = setInterval(() => {
-      setPicSeconds((prev) => (prev > 0 ? prev - 1 : 0));
+      setPicSeconds((prev) => {
+        if (prev <= 1) {
+          clearInterval(picIntervalRef.current);
+          picIntervalRef.current = null;
+          picTimerActive.current = false;
+          setShowPic(false);
+          setButtonDisabledWrite(false);
+          return 0;
+        }
+        return prev - 1;
+      });
     }, 1000);
   }, []);
 
-  // Start the writing timer
   const startWriteTimer = useCallback(() => {
+    if (writeTimerActive.current) return; // Prevent multiple intervals
+    writeTimerActive.current = true;
+
     setWriteSeconds(240);
     setButtonDisabledWrite(true);
 
     writeIntervalRef.current = setInterval(() => {
-      setWriteSeconds((prev) => (prev > 0 ? prev - 1 : 0));
+      setWriteSeconds((prev) => {
+        if (prev <= 1) {
+          clearInterval(writeIntervalRef.current);
+          writeIntervalRef.current = null;
+          writeTimerActive.current = false;
+          return 0;
+        }
+        return prev - 1;
+      });
     }, 1000);
   }, []);
 
-  // Stop the timer when seconds reach zero
-  useEffect(() => {
-    if (picSeconds === 0 && picIntervalRef.current) {
-      clearInterval(picIntervalRef.current);
-      picIntervalRef.current = null;
-      setShowPic(false);
-      setButtonDisabledWrite(false);
-    }
-
-    if (writeSeconds === 0 && writeIntervalRef.current) {
-      clearInterval(writeIntervalRef.current);
-      writeIntervalRef.current = null;
-    }
-  }, [picSeconds, writeSeconds]);
-
-  // Reset function
   const reset = useCallback(() => {
-    if (picIntervalRef.current) clearInterval(picIntervalRef.current);
-    if (writeIntervalRef.current) clearInterval(writeIntervalRef.current);
+    clearInterval(picIntervalRef.current);
+    clearInterval(writeIntervalRef.current);
+    picIntervalRef.current = null;
+    writeIntervalRef.current = null;
+    picTimerActive.current = false;
+    writeTimerActive.current = false;
+
     setPicSeconds(0);
     setWriteSeconds(0);
     setShowPic(false);
@@ -120,12 +141,10 @@ const Carousel = () => {
     setButtonDisabledWrite(true);
   }, []);
 
-  // Handle image load event
   const handleImageLoad = () => {
     startPicTimer(); // Start the timer only when the image has fully loaded
   };
 
-  // Render loading state
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-full">
@@ -134,12 +153,23 @@ const Carousel = () => {
     );
   }
 
-  // Render error state
   if (error) {
     return (
       <div className="alert alert-error shadow-lg">
         <div>
-          <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="stroke-current flex-shrink-0 h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
           <span>{error}</span>
         </div>
       </div>
@@ -158,15 +188,12 @@ const Carousel = () => {
           />
         ) : (
           <div className="flex items-center justify-center h-48 text-2xl text-gray-300">
-            No Image Available
+            Click on Show Picture Button
           </div>
         )}
       </figure>
       <div className="card-body">
-        <TimerDisplay 
-          picSeconds={picSeconds} 
-          writeSeconds={writeSeconds} 
-        />
+        <TimerDisplay picSeconds={picSeconds} writeSeconds={writeSeconds} />
         <div className="card-actions justify-center">
           <button
             className="btn btn-primary"
@@ -182,10 +209,7 @@ const Carousel = () => {
           >
             Start Writing
           </button>
-          <button 
-            className="btn btn-primary" 
-            onClick={reset}
-          >
+          <button className="btn btn-primary" onClick={reset}>
             Reset
           </button>
         </div>
@@ -194,7 +218,6 @@ const Carousel = () => {
   );
 };
 
-// Separate Timer Display Component
 const TimerDisplay = React.memo(({ picSeconds, writeSeconds }) => {
   const formatTime = (seconds) => {
     if (seconds == null) return "";

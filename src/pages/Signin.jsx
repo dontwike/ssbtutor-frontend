@@ -63,7 +63,7 @@ export default function Signin() {
                   name="email"
                   required
                   autoComplete="email"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6 px-5"
+                  className="block w-full rounded-md border-0 py-1.5 bg-[#1D232A] text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm/6 px-5"
                   onChange={(e) => setUsername(e?.target?.value || "")}
                 />
               </div>
@@ -85,7 +85,7 @@ export default function Signin() {
                   type="password"
                   required
                   autoComplete="current-password"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6 px-5"
+                  className="block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset bg-[#1D232A] text-gray-200 sm:text-sm/6 px-5"
                   onChange={(e) => setPassword(e?.target?.value || "")}
                 />
               </div>
@@ -104,7 +104,7 @@ export default function Signin() {
                   name="name"
                   required
                   autoComplete="name"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6 px-5"
+                  className="block w-full rounded-md border-0 py-1.5 bg-[#1D232A] text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm/6 px-5"
                   onChange={(e) => setName(e?.target?.value || "")}
                 />
               </div>
@@ -123,7 +123,7 @@ export default function Signin() {
                   name="phno"
                   required
                   autoComplete="phno"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6 px-5"
+                  className="block w-full rounded-md border-0 py-1.5 bg-[#1D232A] text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm/6 px-5"
                   onChange={(e) => setPhno(e?.target?.value || "")}
                 />
               </div>
@@ -132,7 +132,7 @@ export default function Signin() {
             <div>
               <button
                 type="submit"
-                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                className="w-full text-[#FFFFFF] bg-[#4F46E5] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-6"
               >
                 Sign in
               </button>

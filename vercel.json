@@ -1,5 +1,37 @@
 {
-  "rewrites":  [
-    {"source": "/(.*)", "destination": "/"}
+  "version": 2,
+  "name": "your-project-name",
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/"
+    },
+    {
+      "src": "/ppdt",
+      "dest": "/"
+    }
+  ],
+  "rewrites": [
+    { 
+      "source": "/api/(.*)", 
+      "destination": "/api-routes/$1" 
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        }
+      ]
+    }
   ]
 }

@@ -19,7 +19,7 @@ export default function Signin() {
       });
 
       console.log(res);
-      navigate("http://localhost:5173/ppdt");
+      navigate("https://ssbtutor-backend.onrender.com/ppdt");
     } catch (e) {
       console.log(e);
     }

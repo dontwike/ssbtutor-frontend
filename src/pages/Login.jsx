@@ -5,12 +5,13 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   const [username, setUsername] = useState("dontwike");
   const [password, setPassword] = useState("123");
+  const [loading, setLoading] = useState(false); // Loader state
   const navigate = useNavigate();
 
   async function handleSubmit(e) {
+    e.preventDefault();
+    setLoading(true); // Start loader
     try {
-      e.preventDefault();
-
       const res = await axios.post("https://ssbtutor-backend.onrender.com/login", {
         username: username,
         password: password,
@@ -19,13 +20,19 @@ const Login = () => {
       if (res.data.token) {
         const token = res.data.token;
         localStorage.setItem("token", token);
+
+        // Show alert for successful login and navigate after user presses OK
+        window.alert("Login successful! Redirecting to the home page...");
         await navigate("/");
+        window.location.reload(); // Reload to ensure updated state
       } else {
         alert("Something went wrong! \nPlease try again");
       }
-      window.location.reload();
     } catch (error) {
       console.log(error);
+      alert("Login failed. Please check your credentials.");
+    } finally {
+      setLoading(false); // Stop loader
     }
   }
 
@@ -115,8 +122,9 @@ const Login = () => {
           type="submit"
           className="w-full text-[#FFFFFF] bg-[#4F46E5] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-6"
           onClick={handleSubmit}
+          disabled={loading} // Disable button when loading
         >
-          Login
+          {loading ? "Logging in..." : "Login"} {/* Show loader text */}
         </button>
         <div className="text-sm font-light text-[#79849b] text-center">
           Don't have an account yet?{" "}

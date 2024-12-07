@@ -7,9 +7,11 @@ export default function Signin() {
   const [password, setPassword] = useState("");
   const [phno, setPhno] = useState("");
   const [name, setName] = useState("");
+  const [loading, setLoading] = useState(false); // Loader state
   const navigate = useNavigate();
 
   async function handleSubmit() {
+    setLoading(true); // Start loader
     try {
       const res = await axios.post("https://ssbtutor-backend.onrender.com/signup", {
         username: username,
@@ -21,15 +23,19 @@ export default function Signin() {
       // Navigate only if the response status is successful
       if (res?.status === 200 || res?.status === 201) {
         console.log("Signup successful:", res?.data || "No data");
+
+        // Show alert and navigate after user presses OK
+        window.alert("Signup successful! Redirecting to login page...");
         navigate("/login");
       } else {
-        alert(res?.data.message)
+        alert(res?.data.message);
         console.error("Unexpected response:", res?.status, res?.data);
       }
     } catch (error) {
-      // Log detailed error for debugging
       console.error("Error during signup:", error?.response?.data || error?.message || error);
       alert("Signup failed. Please try again.");
+    } finally {
+      setLoading(false); // Stop loader
     }
   }
 
@@ -133,8 +139,9 @@ export default function Signin() {
               <button
                 type="submit"
                 className="w-full text-[#FFFFFF] bg-[#4F46E5] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-6"
+                disabled={loading} // Disable button when loading
               >
-                Sign in
+                {loading ? "Signing up..." : "Sign in"} {/* Show loader text */}
               </button>
             </div>
           </form>

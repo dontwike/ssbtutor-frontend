@@ -54,7 +54,7 @@ const Navbar = () => {
         <div className="dropdown">
           <button
             tabIndex={0}
-            className="btn btn-ghost lg:hidden"
+            className="btn btn-ghost lg:hidden text-white"
             aria-label="Toggle menu"
           >
             <svg

@@ -11,6 +11,8 @@ const CommentSection = () => {
   const { id: postId } = useParams();
   const [isListening, setIsListening] = useState(false);
   const [recognition, setRecognition] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false); // State for "Post Comment"
+  const [replySubmitting, setReplySubmitting] = useState(false); // State for reply button
 
   useEffect(() => {
     const SpeechRecognition =
@@ -23,7 +25,6 @@ const CommentSection = () => {
       recognitionInstance.lang = "en-US";
 
       recognitionInstance.onresult = (event) => {
-        // Optional chaining and null check for event.results
         const transcript = event?.results?.[0]?.[0]?.transcript || "";
         setNewComment((prev) => prev + " " + transcript);
         setIsListening(false);
@@ -61,7 +62,6 @@ const CommentSection = () => {
     };
     fetchComments();
   }, [postId]);
-  
 
   const startVoiceInput = () => {
     if (recognition) {
@@ -82,12 +82,13 @@ const CommentSection = () => {
   const toggleVisibility = (parentId) => {
     setVisibleComments((prev) => ({
       ...prev,
-      [parentId]: !prev?.[parentId], // Optional chaining
+      [parentId]: !prev?.[parentId],
     }));
   };
 
   const handleNewComment = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true); // Set submitting state for main comment
     try {
       const response = await axios.post(
         "https://ssbtutor-backend.onrender.com/comments",
@@ -102,18 +103,48 @@ const CommentSection = () => {
           },
         }
       );
-      
-      // Optional chaining for response
+
       if (response?.data) {
         const addedComment = response.data;
         setComments((prevComments) => [...prevComments, addedComment]);
         setNewComment("");
         setReplyTo(null);
       }
-      
-      window.location.reload();
     } catch (error) {
       console.error("Error adding comment:", error?.message || error);
+    } finally {
+      setIsSubmitting(false); // Reset submitting state
+    }
+  };
+
+  const handleReplyComment = async (e, parentId) => {
+    e.preventDefault();
+    setReplySubmitting(true); // Set submitting state for replies
+    try {
+      const response = await axios.post(
+        "https://ssbtutor-backend.onrender.com/comments",
+        {
+          postId: postId,
+          parentComment: parentId,
+          content: newComment,
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("token") || "",
+          },
+        }
+      );
+
+      if (response?.data) {
+        const addedComment = response.data;
+        setComments((prevComments) => [...prevComments, addedComment]);
+        setNewComment("");
+        setReplyTo(null);
+      }
+    } catch (error) {
+      console.error("Error replying to comment:", error?.message || error);
+    } finally {
+      setReplySubmitting(false); // Reset submitting state
     }
   };
 
@@ -125,7 +156,7 @@ const CommentSection = () => {
           key={comment?._id}
           className={`p-6 mb-3 ${
             parentId ? "ml-6 lg:ml-12" : ""
-          } text-base bg-transparent  rounded-lg dark:bg-gray-900`}
+          } text-base bg-transparent rounded-lg dark:bg-gray-900`}
         >
           <footer className="flex justify-between items-center mb-2">
             <div className="flex items-center">
@@ -134,14 +165,16 @@ const CommentSection = () => {
               </p>
               <p className="text-sm text-gray-200 dark:text-gray-300">
                 <time dateTime={comment?.timestamp}>
-                  {comment?.timestamp 
-                    ? new Date(comment.timestamp).toLocaleDateString() 
+                  {comment?.timestamp
+                    ? new Date(comment.timestamp).toLocaleDateString()
                     : "Date Unknown"}
                 </time>
               </p>
             </div>
           </footer>
-          <p className="text-gray-200 dark:text-gray-400">{comment?.content || "No content"}</p>
+          <p className="text-gray-200 dark:text-gray-400">
+            {comment?.content || "No content"}
+          </p>
           <div className="flex items-center mt-4 space-x-4">
             <button
               type="button"
@@ -159,7 +192,10 @@ const CommentSection = () => {
             </button>
           </div>
           {replyTo === comment?._id && (
-            <form className="mt-4" onSubmit={handleNewComment}>
+            <form
+              className="mt-4"
+              onSubmit={(e) => handleReplyComment(e, comment._id)}
+            >
               <textarea
                 rows="3"
                 value={newComment}
@@ -172,9 +208,12 @@ const CommentSection = () => {
               ></textarea>
               <button
                 type="submit"
-                className="mt-2 inline-flex items-center py-1.5 px-3 text-xs font-medium text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900"
+                className={`mt-2 inline-flex items-center py-1.5 px-3 text-xs font-medium text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 ${
+                  replySubmitting ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+                disabled={replySubmitting}
               >
-                Post Reply
+                {replySubmitting ? "Posting Reply..." : "Post Reply"}
               </button>
               <button
                 type="button"
@@ -231,9 +270,12 @@ const CommentSection = () => {
           </div>
           <button
             type="submit"
-            className="btn btn-primary mt-3"
+            className={`btn btn-primary mt-3 ${
+              isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            disabled={isSubmitting}
           >
-            Post Comment
+            {isSubmitting ? "Posting..." : "Post Comment"}
           </button>
         </form>
         {renderComments(comments)}
